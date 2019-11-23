@@ -3,7 +3,7 @@ import React,{Component} from 'react'
 export default class Counter extends Component{
 
   componentDidMount(){
-    console.log(this.props.increment);
+    console.log(this.props.count);
   }
 
   //加法
@@ -34,7 +34,7 @@ export default class Counter extends Component{
   render(){
     return (
       <div>
-        <h3>当前计数为{this.props.count}</h3>
+        <h3>当前计数为{this.props.count}，当前store中有{this.props.person.length}个人</h3>
         <select ref="selectNumber">
           <option value="1">1</option>
           <option value="2">2</option>

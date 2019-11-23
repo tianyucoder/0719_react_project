@@ -1,4 +1,4 @@
-import {DECREMENT,INCREMENT} from './action_types'
+import {DECREMENT,INCREMENT} from '../action_types'
 
 //创建一个同步的action，用于增加
 export const createIncrementAction = value=>({type:INCREMENT,data:value})

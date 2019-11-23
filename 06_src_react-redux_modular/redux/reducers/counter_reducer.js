@@ -1,4 +1,4 @@
-import {INCREMENT,DECREMENT} from './action_types'
+import {INCREMENT,DECREMENT} from '../action_types'
 
 let initState = 0 //设置初始化状态
 export default function operaCount(preState=initState,action) {

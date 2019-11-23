@@ -1,42 +1,43 @@
 import React,{Component} from 'react'
 
-
 export default class App extends Component{
 
-  componentDidMount(){
-    console.log(this.props.store);
+  state = {
+    count:0
   }
 
   //加法
   increment = ()=>{
     let {value} = this.refs.selectNumber
-    this.props.store.dispatch({type:'increment',data:value*1})
+    let {count} = this.state
+    this.setState({count:count+value*1})
   }
 
   //减法
   decrement = ()=>{
     let {value} = this.refs.selectNumber
-    this.props.store.dispatch({type:'decrement',data:value*1})
+    let {count} = this.state
+    this.setState({count:count-value*1})
   }
 
   incrementIfOdd = ()=>{
     let {value} = this.refs.selectNumber
-    let count = this.props.store.getState()
+    let {count} = this.state
     if(count%2 === 1){
-      this.props.store.dispatch({type:'increment',data:value*1})
+      this.setState({count:count+value*1})
     }
   }
 
   incrementAsync = ()=>{
     let {value} = this.refs.selectNumber
+    let {count} = this.state
     setTimeout(()=>{
-      this.props.store.dispatch({type:'increment',data:value*1})
+      this.setState({count:count+value*1})
    },1000)
   }
 
   render(){
-    //let {count} = this.state
-    let count = this.props.store.getState()
+    let {count} = this.state
     return (
       <div>
         <h3>当前计数为{count}</h3>

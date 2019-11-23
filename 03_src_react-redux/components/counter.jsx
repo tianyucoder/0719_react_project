@@ -9,6 +9,7 @@ export default class Counter extends Component{
   //加法
   increment = ()=>{
     let {value} = this.refs.selectNumber
+    //this.props.store.dispatch(createIncrementAction(value*1))
     this.props.increment(value*1)
   }
 
@@ -28,10 +29,14 @@ export default class Counter extends Component{
 
   incrementAsync = ()=>{
     let {value} = this.refs.selectNumber
-    this.props.incrementAsync(value*1,1000)
+    setTimeout(()=>{
+      this.props.increment(value*1)
+   },1000)
   }
 
   render(){
+    //let {count} = this.state
+    //let count = this.props.store.getState()
     return (
       <div>
         <h3>当前计数为{this.props.count}</h3>

@@ -5,19 +5,17 @@ import {connect} from 'react-redux'
 
 class Admin extends Component{
 
-  componentDidMount(){
-    console.log(this.props);
-  }
-
+  //退出登录的回调
   logout = ()=>{
+    //触发redux删除所保存的用户信息
     this.props.deleteUserInfo()
   }
   
   //在render里，若想实现跳转，最好用<Redirect>
   render(){
+    //从redux中获取user和isLogin
     const {user,isLogin} = this.props.userInfo
     if(!isLogin){
-      console.log('没有登录');
       return <Redirect to="/login"/>
     }else{
       console.log('登录了');
@@ -31,8 +29,7 @@ class Admin extends Component{
   }
 }
 
-//如下代码中的所有key是控制容器组件传递给UI组件的key
-//如下代码中的所有value是控制容器组件传递给UI组件的value
+//从redux中获取状态和操作状态的方法
 export default connect(
   state => ({userInfo:state.userInfo}),
   {

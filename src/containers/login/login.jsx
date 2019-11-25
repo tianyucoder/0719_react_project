@@ -11,15 +11,18 @@ const {Item} = Form
 
 class Login extends Component{
 
-
   //点击登录按钮的回调
   handleSubmit = (event)=>{
-    event.preventDefault();//阻止默认事件--禁止form表单提交---通过ajax发送
+    //阻止默认事件--禁止form表单提交---通过ajax发送
+    event.preventDefault();
+    //表单的统一验证
     this.props.form.validateFields(async(err, values) => {
-      //values的值是：{username：xxxx,password:yyyy}
+      //获取用户输入
       const {username,password} = values
       if(!err){
+        //若用户输入无错误，发送登录请求
         let result = await reqLogin(username,password)
+        //从响应中获取：请求状态、错误信息、数据
         const {status,msg,data} = result
         if(status === 0){
           //1.服务器返回的user信息，还有token交由redux管理
@@ -27,6 +30,7 @@ class Login extends Component{
           //2.跳转admin页面
           this.props.history.replace('/admin')
         }else{
+          //若登录失败
           message.warning(msg,1)
         }
       }else{
@@ -52,8 +56,9 @@ class Login extends Component{
 
   render(){
     const {getFieldDecorator} = this.props.form;
+    //从redux中获取用户的登录状态
     const {isLogin} = this.props;
-    //如果已经登录了
+    //如果已经登录了，重定向到admin页面
     if(isLogin){
       return <Redirect to="/admin"/>
     }
@@ -114,6 +119,7 @@ class Login extends Component{
   }
 }
 
+//从redux中获取state和操作state的方法
 export default connect(
   state => ({isLogin:state.userInfo.isLogin}),
   {

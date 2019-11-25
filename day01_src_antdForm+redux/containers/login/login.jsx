@@ -1,17 +1,23 @@
 import React,{Component} from 'react'
 import {Form,Icon,Input,Button,message} from 'antd';
+import {connect} from 'react-redux'
+import {createDemo1Action,createDemo2Action} from '../../redux/action_creators/test_action'
 import './css/login.less'
 import logo from './imgs/logo.png'
 const {Item} = Form
 
 class Login extends Component{
+  componentDidMount(){
+    console.log(this.props);
+  }
 
   //点击登录按钮的回调
   handleSubmit = (event)=>{
     event.preventDefault();//阻止默认事件--禁止form表单提交---通过ajax发送
     this.props.form.validateFields((err, values) => {
       if(!err){
-        alert('向服务器发送登录请求')
+        //alert('向服务器发送登录请求')
+        this.props.demo2('0719')
       }else{
         message.error('表单输入有误，请检查！')
       }
@@ -39,7 +45,7 @@ class Login extends Component{
       <div className="login">
         <header>
           <img src={logo} alt="logo"/>
-          <h1>商品管理系统</h1>
+          <h1>商品管理系统{this.props.test}</h1>
         </header>
         <section>
           <h1>用户登录</h1>
@@ -97,7 +103,14 @@ class Login extends Component{
     2.Form.create()调用返回一个函数，该函数加工了Login组件，生成了一个新组件，新组件实例对象的props多了一个强大的form属性，能完成验证。
     3.我们暴露出去的不再是Login，而是通过Login生成的一个新组件。 
 */
-export default Form.create()(Login)
+
+ export default connect(
+  state => ({test:state.test}),
+  {
+    demo1:createDemo1Action,
+    demo2:createDemo2Action,
+  }
+)(Form.create()(Login))
 
 /* 
   总结：

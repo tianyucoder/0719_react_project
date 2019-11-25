@@ -1,7 +1,8 @@
 import React,{Component} from 'react'
 import {Form,Icon,Input,Button,message} from 'antd';
 import {connect} from 'react-redux'
-import {createDemo1Action,createDemo2Action} from '../../redux/action_creators/test_action'
+import {Redirect} from 'react-router-dom'
+import {createSaveUserInfoAction} from '../../redux/action_creators/login_action'
 import {reqLogin} from '../../api'
 import './css/login.less'
 import logo from './imgs/logo.png'
@@ -9,6 +10,7 @@ const {Item} = Form
 
 
 class Login extends Component{
+
 
   //点击登录按钮的回调
   handleSubmit = (event)=>{
@@ -20,8 +22,10 @@ class Login extends Component{
         let result = await reqLogin(username,password)
         const {status,msg,data} = result
         if(status === 0){
-          console.log(data);
-          //跳转到admin
+          //1.服务器返回的user信息，还有token交由redux管理
+          this.props.saveUserInfo(data)
+          //2.跳转admin页面
+          this.props.history.replace('/admin')
         }else{
           message.warning(msg,1)
         }
@@ -48,6 +52,11 @@ class Login extends Component{
 
   render(){
     const {getFieldDecorator} = this.props.form;
+    const {isLogin} = this.props;
+    //如果已经登录了
+    if(isLogin){
+      return <Redirect to="/admin"/>
+    }
     return (
       <div className="login">
         <header>
@@ -105,12 +114,10 @@ class Login extends Component{
   }
 }
 
-
 export default connect(
-  state => ({test:state.test}),
+  state => ({isLogin:state.userInfo.isLogin}),
   {
-    demo1:createDemo1Action,
-    demo2:createDemo2Action,
+    saveUserInfo:createSaveUserInfoAction,
   }
 )(Form.create()(Login))
 

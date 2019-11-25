@@ -13,11 +13,18 @@ class Login extends Component{
   //点击登录按钮的回调
   handleSubmit = (event)=>{
     event.preventDefault();//阻止默认事件--禁止form表单提交---通过ajax发送
-    this.props.form.validateFields((err, values) => {
+    this.props.form.validateFields(async(err, values) => {
       //values的值是：{username：xxxx,password:yyyy}
       const {username,password} = values
       if(!err){
-        reqLogin(username,password)
+        let result = await reqLogin(username,password)
+        const {status,msg,data} = result
+        if(status === 0){
+          console.log(data);
+          //跳转到admin
+        }else{
+          message.warning(msg,1)
+        }
       }else{
         message.error('表单输入有误，请检查！')
       }

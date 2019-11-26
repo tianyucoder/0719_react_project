@@ -2,6 +2,7 @@ import axios from 'axios'
 import {message} from 'antd'
 import NProgress from 'nprogress'
 import qs from 'querystring'
+import store from '../redux/store'
 import 'nprogress/nprogress.css'
 
 const instance = axios.create({
@@ -12,6 +13,10 @@ const instance = axios.create({
 instance.interceptors.request.use((config)=> {
   //进度条开始
   NProgress.start()
+  //从redux中获取之前所保存的token
+  const {token} = store.getState().userInfo
+  //向请求头中添加token，用于校验身份
+  if(token) config.headers.Authorization = 'atguigu_' + token
   //从配置对象中获取method和data
   const {method,data} = config 
   //若是post请求

@@ -19,3 +19,19 @@
 * 3.使用响应拦截器，统一处理所有ajax请求的错误 + 从axios返回对象中提取真正服务器返回的数据
 * 4.Redux保存user和token数据，完成自动登录
 * 5.完成退出登录逻辑
+
+### day04任务
+* 1.使用es6的装饰器语法
+
+	    //装饰器语法，让MyClass多了一个a属性
+	    @demo
+	    class MyClass { }
+	    function demo(target) {
+	      target.a = 1;
+	    }
+	    //正常语法，让MyClass多了一个a属性
+	    class MyClass { }
+	    function demo(target) {
+	      target.a = 1;
+	    }
+    	MyClass = demo(MyClass)

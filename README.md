@@ -41,4 +41,5 @@
 * 5.Header组件静态
 * 6.Header组件交互--全屏切换，使用screenfull库
 * 7.Header组件交互--退出登录，使用antd的Modal提示框组件
-* 8.
+* 8.Header组件交互--天气预报，请求的是百度接口，使用了jsonp库发送请求
+* 9.使用withRouter包装非路由组件，让非路由组件可以使用路由组件的API

@@ -16,7 +16,7 @@ export const reqLogin = (username,password)=> myAxios.post(`${BASE_URL}/login`,{
 //获取商品列表请求
 export const reqCategoryList = ()=> myAxios.get(`${BASE_URL}/manage/category/list`)
 
-//获取天气信息（百度接口）
+//获取天气信息（百度接口,使用jsonp的方式请求）
 export const reqWeather = ()=>{
   return new Promise((resolve,reject)=>{
       jsonp(`http://api.map.baidu.com/telematics/v3/weather?location=${CITY}&output=json&ak=${WEATHER_AK}`,(err,data)=>{

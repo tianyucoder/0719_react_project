@@ -1,6 +1,6 @@
 import React,{Component} from 'react'
 import {Icon,Button,Modal} from 'antd'
-import {withRouter} from 'react-router-dom' //在非路由组件中，要使用路由组件的api
+import {withRouter} from 'react-router-dom' //在非路由组件中，要使用路由组件的api，借助withRouter实现
 import screenfull from 'screenfull'
 import {connect} from 'react-redux'
 import dayjs from 'dayjs'
@@ -22,6 +22,7 @@ class Header extends Component{
     weatherInfo:{}
   }
 
+  //获取天气数据
   getWeather = async()=>{
     let weather = await reqWeather()
     this.setState({weatherInfo:weather})
@@ -33,13 +34,16 @@ class Header extends Component{
       let isFull = !this.state.isFull
       this.setState({isFull})
     });
+    //更新时间
     this.timeID = setInterval(()=>{
       this.setState({date:dayjs().format('YYYY年 MM月DD日 HH:mm:ss')})
     },1000)
+    //请求天气数据
     this.getWeather()
   }
 
   componentWillUnmount(){
+    //清除更新时间定时器
     clearInterval(this.timeID)
   }
 
@@ -61,7 +65,6 @@ class Header extends Component{
       },
     });
   }
-
 
   render(){
     let {isFull,weatherInfo} = this.state

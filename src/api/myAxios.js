@@ -46,8 +46,8 @@ instance.interceptors.response.use(
       //分发一个删除用户信息的action
       store.dispatch(createDeleteUserInfoAction())
     }else{
-        //请求若失败，提示错误（这里可以处理所有请求的异常）
-        message.error(error.message,1)
+      //请求若失败，提示错误（这里可以处理所有请求的异常）
+      message.error(error.message,1)
     }
     //中断Promise链
     return new Promise(()=>{})

@@ -21,7 +21,7 @@
 * 5.完成退出登录逻辑
 
 ### day04任务
-* 1.使用es6的装饰器语法
+* 1.使用es6的装饰器语法，要安装@babel/plugin-proposal-decorators
 
 	    //装饰器语法，让MyClass多了一个a属性
 	    @demo

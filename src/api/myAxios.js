@@ -3,6 +3,7 @@ import {message} from 'antd'
 import NProgress from 'nprogress'
 import qs from 'querystring'
 import store from '../redux/store'
+import {createDeleteUserInfoAction} from '../redux/action_creators/login_action'
 import 'nprogress/nprogress.css'
 
 const instance = axios.create({
@@ -40,8 +41,14 @@ instance.interceptors.response.use(
   (error) => {
     //进度条结束
     NProgress.done()
-    //请求若失败，提示错误（这里可以处理所有请求的异常）
-    message.error(error.message,1)
+    if(error.response.status === 401){
+      message.error('身份校验失败，请重新登录',1)
+      //分发一个删除用户信息的action
+      store.dispatch(createDeleteUserInfoAction())
+    }else{
+        //请求若失败，提示错误（这里可以处理所有请求的异常）
+        message.error(error.message,1)
+    }
     //中断Promise链
     return new Promise(()=>{})
   }

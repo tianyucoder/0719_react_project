@@ -1,6 +1,6 @@
 import React,{Component} from 'react'
 import {Icon,Button} from 'antd'
-import './css/header.less'
+import './header.less'
 
 export default class Header extends Component{
   render(){

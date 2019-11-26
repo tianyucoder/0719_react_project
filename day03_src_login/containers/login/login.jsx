@@ -8,13 +8,7 @@ import './css/login.less'
 import logo from './imgs/logo.png'
 const {Item} = Form
 
-@connect(
-  state => ({isLogin:state.userInfo.isLogin}),
-  {
-    saveUserInfo:createSaveUserInfoAction,
-  }
-)
-@Form.create()
+
 class Login extends Component{
 
   //点击登录按钮的回调
@@ -35,8 +29,13 @@ class Login extends Component{
           this.props.saveUserInfo(data)
           //2.跳转admin页面
           this.props.history.replace('/admin')
-        }else message.warning(msg,1)
-      }else message.error('表单输入有误，请检查！')
+        }else{
+          //若登录失败
+          message.warning(msg,1)
+        }
+      }else{
+        message.error('表单输入有误，请检查！')
+      }
     });
   }
 
@@ -60,7 +59,9 @@ class Login extends Component{
     //从redux中获取用户的登录状态
     const {isLogin} = this.props;
     //如果已经登录了，重定向到admin页面
-    if(isLogin)return <Redirect to="/admin"/>
+    if(isLogin){
+      return <Redirect to="/admin"/>
+    }
     return (
       <div className="login">
         <header>
@@ -72,6 +73,14 @@ class Login extends Component{
           <Form onSubmit={this.handleSubmit} className="login-form">
             <Item>
             {getFieldDecorator('username', {
+              /*
+                用户名/密码的的合法性要求
+                  1). 必须输入
+                  2). 必须大于等于4位
+                  3). 必须小于等于12位
+                  4). 必须是字母、数字、下划线组成
+                */
+                //定义用户名校验规则---“声明式验证”，即：自己不去做实际判断，只是声明
                 rules: [
                   {required: true, message: '用户名必须输入！'},
                   {max: 12, message: '用户名必须小于等于12位'},
@@ -109,5 +118,13 @@ class Login extends Component{
     )
   }
 }
-export default Login
+
+//从redux中获取state和操作state的方法
+export default connect(
+  state => ({isLogin:state.userInfo.isLogin}),
+  {
+    saveUserInfo:createSaveUserInfoAction,
+  }
+)(Form.create()(Login))
+
 

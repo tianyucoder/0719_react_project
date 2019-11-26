@@ -35,3 +35,10 @@
 	      target.a = 1;
 	    }
     	MyClass = demo(MyClass)
+* 2.token工作原理 + 实现token验证
+* 3.Admin界面布局 -- 使用antd的Layout组件
+* 4.Admin子路由搭建 -- 区分好容器组件和UI组件
+* 5.Header组件静态
+* 6.Header组件交互--全屏切换，使用screenfull库
+* 7.Header组件交互--退出登录，使用antd的Modal提示框组件
+* 

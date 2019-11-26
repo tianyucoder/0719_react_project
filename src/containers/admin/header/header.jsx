@@ -1,5 +1,6 @@
 import React,{Component} from 'react'
 import {Icon,Button,Modal} from 'antd'
+import {withRouter} from 'react-router-dom' //在非路由组件中，要使用路由组件的api
 import screenfull from 'screenfull'
 import {connect} from 'react-redux'
 import dayjs from 'dayjs'
@@ -12,16 +13,18 @@ const {confirm} = Modal;
   state => ({userInfo:state.userInfo}),
   {deleteUser:createDeleteUserInfoAction}
 )
+@withRouter
 class Header extends Component{
 
   state = {
     isFull:false,
-    date:dayjs().format('YYYY年 MM月DD日 HH:mm:ss')
+    date:dayjs().format('YYYY年 MM月DD日 HH:mm:ss'),
+    weatherInfo:{}
   }
 
   getWeather = async()=>{
-    let result = await reqWeather()
-    console.log(result);
+    let weather = await reqWeather()
+    this.setState({weatherInfo:weather})
   }
 
   componentDidMount(){
@@ -30,10 +33,14 @@ class Header extends Component{
       let isFull = !this.state.isFull
       this.setState({isFull})
     });
-    setInterval(()=>{
+    this.timeID = setInterval(()=>{
       this.setState({date:dayjs().format('YYYY年 MM月DD日 HH:mm:ss')})
     },1000)
     this.getWeather()
+  }
+
+  componentWillUnmount(){
+    clearInterval(this.timeID)
   }
 
   //切换全屏按钮的回调
@@ -57,7 +64,7 @@ class Header extends Component{
 
 
   render(){
-    let {isFull} = this.state
+    let {isFull,weatherInfo} = this.state
     let {user} = this.props.userInfo
     return (
       <header className="header">
@@ -70,12 +77,12 @@ class Header extends Component{
         </div>
         <div className="header-bottom">
             <div className="header-bottom-left">
-              柱状图
+              {this.props.location.pathname}
             </div>
             <div className="header-bottom-right">
               {this.state.date}
-              <img src="http://api.map.baidu.com/images/weather/day/qing.png" alt="天气信息"/>
-              晴&nbsp;&nbsp;&nbsp;温度：2 ~ -5
+              <img src={weatherInfo.dayPictureUrl} alt="天气信息"/>
+              {weatherInfo.weather}&nbsp;&nbsp;&nbsp;温度：{weatherInfo.temperature}
             </div>
         </div>
       </header>

@@ -30,7 +30,6 @@ class Admin extends Component{
     
   }
 
-  
   //在render里，若想实现跳转，最好用<Redirect>
   render(){
     //从redux中获取user和isLogin

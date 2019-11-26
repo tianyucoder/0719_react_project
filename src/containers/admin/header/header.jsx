@@ -2,7 +2,9 @@ import React,{Component} from 'react'
 import {Icon,Button,Modal} from 'antd'
 import screenfull from 'screenfull'
 import {connect} from 'react-redux'
+import dayjs from 'dayjs'
 import {createDeleteUserInfoAction} from '../../../redux/action_creators/login_action'
+import {reqWeather} from '../../../api'
 import './header.less'
 const {confirm} = Modal;
 
@@ -13,7 +15,13 @@ const {confirm} = Modal;
 class Header extends Component{
 
   state = {
-    isFull:false
+    isFull:false,
+    date:dayjs().format('YYYY年 MM月DD日 HH:mm:ss')
+  }
+
+  getWeather = async()=>{
+    let result = await reqWeather()
+    console.log(result);
   }
 
   componentDidMount(){
@@ -22,6 +30,10 @@ class Header extends Component{
       let isFull = !this.state.isFull
       this.setState({isFull})
     });
+    setInterval(()=>{
+      this.setState({date:dayjs().format('YYYY年 MM月DD日 HH:mm:ss')})
+    },1000)
+    this.getWeather()
   }
 
   //切换全屏按钮的回调
@@ -61,7 +73,7 @@ class Header extends Component{
               柱状图
             </div>
             <div className="header-bottom-right">
-              2019-11-26 11:50:09
+              {this.state.date}
               <img src="http://api.map.baidu.com/images/weather/day/qing.png" alt="天气信息"/>
               晴&nbsp;&nbsp;&nbsp;温度：2 ~ -5
             </div>

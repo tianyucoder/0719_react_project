@@ -7,3 +7,6 @@ export const BASE_URL = ''
 export const WEATHER_AK = '3p49MVra6urFRGOT9s8UBWr2' 
 //当前城市名
 export const CITY = 'beijing' 
+//表格每页展示条数
+export const PAGE_SIZE = 5
+

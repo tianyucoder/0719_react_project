@@ -32,3 +32,7 @@ export const reqWeather = ()=>{
   })
 }
 
+//新增商品分类
+export const reqAddCategory = ({categoryName})=> myAxios.post(`${BASE_URL}/manage/category/add`,{categoryName})
+
+

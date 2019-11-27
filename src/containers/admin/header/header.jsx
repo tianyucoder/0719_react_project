@@ -11,7 +11,10 @@ import './header.less'
 const {confirm} = Modal;
 
 @connect(
-  state => ({userInfo:state.userInfo}),
+  state => ({
+    userInfo:state.userInfo,
+    title:state.title
+  }),
   {deleteUser:createDeleteUserInfoAction}
 )
 @withRouter
@@ -88,7 +91,6 @@ class Header extends Component{
   }
 
   render(){
-    console.log('-----render-----');
     let {isFull,weatherInfo} = this.state
     let {user} = this.props.userInfo
     return (
@@ -102,7 +104,7 @@ class Header extends Component{
         </div>
         <div className="header-bottom">
             <div className="header-bottom-left">
-              {this.state.title}
+              {this.props.title || this.state.title}
             </div>
             <div className="header-bottom-right">
               {this.state.date}

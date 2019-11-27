@@ -1,11 +1,19 @@
 import React, { Component } from 'react'
 import {Menu, Icon} from 'antd';
 import {Link,withRouter} from 'react-router-dom'
+import {connect} from 'react-redux'
+import {createSaveTitleAction} from '../../../redux/action_creators/menu_action'
 import logo from '../../../static/imgs/logo.png'
 import menuList from '../../../config/menu_config'
 import './left_nav.less'
 const {SubMenu,Item} = Menu;
 
+@connect(
+  state => ({}),
+  {
+    saveTitle:createSaveTitleAction
+  }
+)
 @withRouter
 class LeftNav extends Component {
 
@@ -13,12 +21,13 @@ class LeftNav extends Component {
     console.log(this.props.location.pathname.split('/').splice(2));
   }
 
+
   //用于创建菜单的函数
   createMenu = (target)=>{
     return target.map((item)=>{
       if(!item.children){
         return (
-          <Item key={item.key}>
+          <Item key={item.key} onClick={()=>{this.props.saveTitle(item.title)}}>
             <Link to={item.path}>
               <Icon type={item.icon} />
               <span>{item.title}</span>

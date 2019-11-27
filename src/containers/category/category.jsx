@@ -13,7 +13,7 @@ class Category extends Component{
     operType:'',//操作类型（新增？修改？）
     isLoading:true,//是否处于加载中
     modalCurrentValue:'',//弹窗显示的值---用于数据回显
-    modalCurrentId:''//
+    modalCurrentId:''//当前修改分类的id
   }
 
   componentDidMount(){
@@ -33,21 +33,21 @@ class Category extends Component{
   //用于展示弹窗--作为新增
   showAdd = () => {
     this.setState({
-      operType:'add',
-      modalCurrentValue:'',
-      modalCurrentId:'',
-      visible: true,
+      operType:'add',//类型更改为添加
+      modalCurrentValue:'',//弹窗回显的值
+      modalCurrentId:'',//当前操作的id
+      visible: true,//展示弹窗
     });
   };
 
   //用于展示弹窗--作为修改
   showUpdate = (item) => {
-    const {_id,name} = item
+    const {_id,name} = item //获取当前要修改分类的id、name
     this.setState({
-      modalCurrentValue:name,
-      operType:'update',
-      visible: true,
-      modalCurrentId:_id
+      modalCurrentValue:name,//当前名字存入state
+      modalCurrentId:_id,//当前操作的id存入stat
+      visible: true,//展示弹窗
+      operType:'update',//操作方式变为更新
     });
   };
 
@@ -59,8 +59,7 @@ class Category extends Component{
       message.success('新增商品分类成功')
       let categoryList = [...this.state.categoryList]
       categoryList.unshift(data)
-      this.setState({categoryList})
-      this.setState({visible: false}); //隐藏弹窗
+      this.setState({categoryList,visible: false})
       this.props.form.resetFields()//重置表单
     }
     if(status === 1) message.error(msg,1)
@@ -71,10 +70,8 @@ class Category extends Component{
     const {status,msg} = result
     if(status === 0) {
       message.success('更新分类名称成功',1)
-      this.getCategoryList()
-      this.setState({
-        visible: false
-      }); //隐藏弹窗
+      this.getCategoryList()//重新请求商品列表
+      this.setState({visible: false}); //隐藏弹窗
       this.props.form.resetFields()//重置表单
     }else{
       message.error(msg,1)

@@ -1,6 +1,6 @@
 import React,{Component} from 'react'
 import {Card,Button,Icon,Table,message,Modal,Form,Input} from 'antd';
-import {reqCategoryList,reqAddCategory} from '../../api'
+import {reqCategoryList,reqAddCategory,reqUpdateCategory} from '../../api'
 import {PAGE_SIZE} from '../../config'
 const {Item} = Form
 
@@ -11,7 +11,9 @@ class Category extends Component{
     categoryList:[], //商品分类列表
     visible:false,//控制弹窗的展示或隐藏
     operType:'',//操作类型（新增？修改？）
-    isLoading:true
+    isLoading:true,//是否处于加载中
+    modalCurrentValue:'',//弹窗显示的值---用于数据回显
+    modalCurrentId:''//
   }
 
   componentDidMount(){
@@ -32,15 +34,20 @@ class Category extends Component{
   showAdd = () => {
     this.setState({
       operType:'add',
+      modalCurrentValue:'',
+      modalCurrentId:'',
       visible: true,
     });
   };
 
   //用于展示弹窗--作为修改
-  showUpdate = () => {
+  showUpdate = (item) => {
+    const {_id,name} = item
     this.setState({
+      modalCurrentValue:name,
       operType:'update',
       visible: true,
+      modalCurrentId:_id
     });
   };
 
@@ -59,6 +66,21 @@ class Category extends Component{
     if(status === 1) message.error(msg,1)
   }
 
+  toUpdate = async(categoryObj)=>{
+    let result = await reqUpdateCategory(categoryObj)
+    const {status,msg} = result
+    if(status === 0) {
+      message.success('更新分类名称成功',1)
+      this.getCategoryList()
+      this.setState({
+        visible: false
+      }); //隐藏弹窗
+      this.props.form.resetFields()//重置表单
+    }else{
+      message.error(msg,1)
+    }
+  }
+
   //点击弹窗ok按钮的回调
   handleOk = () => {
     const {operType} = this.state
@@ -68,8 +90,12 @@ class Category extends Component{
         return
       }
       if(operType==='add') this.toAdd(values)
-      if(operType==='update') console.log('你是要修改');
-      
+      if(operType==='update'){
+        const categoryId = this.state.modalCurrentId
+        const categoryName = values.categoryName
+        const categoryObj = {categoryId,categoryName}
+        this.toUpdate(categoryObj)
+      }
     });
   };
 
@@ -96,7 +122,7 @@ class Category extends Component{
         title: '操作',
         //dataIndex: 'key',
         key: 'age',
-        render:(a)=>{return <Button type="link" onClick={this.showUpdate}>修改分类</Button>},
+        render:(item)=>{return <Button type="link" onClick={()=>{this.showUpdate(item)}}>修改分类</Button>},
         width:'25%',
         align:'center'
       },
@@ -112,9 +138,9 @@ class Category extends Component{
             columns={columns}
             bordered
             rowKey="_id"
-            pagination={{pageSize:PAGE_SIZE}}
+            pagination={{pageSize:PAGE_SIZE,showQuickJumper:true}}
             loading={this.state.isLoading}
-          />;
+          />
         </Card>
         <Modal
           title={operType === 'add' ? '新增分类' : '修改分类'}
@@ -127,6 +153,7 @@ class Category extends Component{
           <Form onSubmit={this.handleSubmit} className="login-form">
             <Item>
             {getFieldDecorator('categoryName', {
+                initialValue:this.state.modalCurrentValue,
                 rules: [
                   {required: true, message: '分类名必须输入！'},
                 ],

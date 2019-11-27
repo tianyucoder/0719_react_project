@@ -5,6 +5,7 @@ import screenfull from 'screenfull'
 import {connect} from 'react-redux'
 import dayjs from 'dayjs'
 import {createDeleteUserInfoAction} from '../../../redux/action_creators/login_action'
+import menuList from '../../../config/menu_config'
 import {reqWeather} from '../../../api'
 import './header.less'
 const {confirm} = Modal;
@@ -19,7 +20,8 @@ class Header extends Component{
   state = {
     isFull:false,
     date:dayjs().format('YYYY年 MM月DD日 HH:mm:ss'),
-    weatherInfo:{}
+    weatherInfo:{},
+    title:''
   }
 
   //获取天气数据
@@ -40,6 +42,8 @@ class Header extends Component{
     },1000)
     //请求天气数据
     this.getWeather()
+    //展示当前菜单名称
+    this.getTitle()
   }
 
   componentWillUnmount(){
@@ -66,7 +70,25 @@ class Header extends Component{
     });
   }
 
+  getTitle = ()=>{
+    console.log('---getTitle---');
+    let pathKey = this.props.location.pathname.split('/').reverse()[0]
+    let title = ''
+    menuList.forEach((item)=>{
+      if(item.children instanceof Array){
+       let tmp =  item.children.find((citem)=>{
+          return citem.key === pathKey
+        })
+       if(tmp) title = tmp.title
+      }else{
+        if( pathKey === item.key) title = item.title
+      }
+    })
+    this.setState({title})
+  }
+
   render(){
+    console.log('-----render-----');
     let {isFull,weatherInfo} = this.state
     let {user} = this.props.userInfo
     return (
@@ -80,7 +102,7 @@ class Header extends Component{
         </div>
         <div className="header-bottom">
             <div className="header-bottom-left">
-              {this.props.location.pathname}
+              {this.state.title}
             </div>
             <div className="header-bottom-right">
               {this.state.date}

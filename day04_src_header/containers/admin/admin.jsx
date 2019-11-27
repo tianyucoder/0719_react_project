@@ -1,11 +1,10 @@
 import React,{Component} from 'react'
 import {Redirect,Route,Switch} from 'react-router-dom'
+import {createDeleteUserInfoAction} from '../../redux/action_creators/login_action'
 import {connect} from 'react-redux'
 import {Layout} from 'antd'
 //import {reqCategoryList} from '../../api/index'
-import {createDeleteUserInfoAction} from '../../redux/action_creators/login_action'
 import Header from './header/header'
-import LeftNav from './left_nav/left_nav'
 import './css/admin.less'
 import Home from '../../components/home/home'
 import Category from '../category/category'
@@ -38,9 +37,7 @@ class Admin extends Component{
     else{
       return (
         <Layout className="admin">
-          <Sider className='sider'>
-            <LeftNav/>
-          </Sider>
+          <Sider className='sider'>Sider</Sider>
           <Layout>
             <Header className="header">Header</Header>
             <Content className="content">

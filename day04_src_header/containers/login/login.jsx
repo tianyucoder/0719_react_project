@@ -5,7 +5,7 @@ import {Redirect} from 'react-router-dom'
 import {createSaveUserInfoAction} from '../../redux/action_creators/login_action'
 import {reqLogin} from '../../api'
 import './css/login.less'
-import logo from '../../static/imgs/logo.png'
+import logo from './imgs/logo.png'
 const {Item} = Form
 
 @connect(

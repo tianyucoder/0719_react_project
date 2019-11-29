@@ -19,7 +19,10 @@ export default class Product extends Component{
   }
 
   getProductList = async(number=1)=>{
-    let result = await reqProductList(number,PAGE_SIZE)
+    const {searchType,keyWord} = this.state
+    let result
+    if(this.isSearch)result = await reqSearchProduct(number,PAGE_SIZE,searchType,keyWord)
+    else result = await reqProductList(number,PAGE_SIZE)
     const {status,data} = result
     if(status===0) {
       this.setState({
@@ -28,7 +31,7 @@ export default class Product extends Component{
         current:data.pageNum
       })
     }
-    else message.error('初始化商品列表失败')
+    else message.error('获取商品列表失败')
   }
 
   updateProdStatus = async({_id,status})=>{
@@ -50,9 +53,8 @@ export default class Product extends Component{
   }
 
   search = async()=>{
-    const {searchType,keyWord} = this.state
-    let result = await reqSearchProduct(1,PAGE_SIZE,searchType,keyWord)
-    console.log(result);
+    this.isSearch = true
+    this.getProductList()
   }
 
 
@@ -108,8 +110,8 @@ export default class Product extends Component{
         render:()=>{
           return (
             <div>
-              <Button type="link">详情</Button><br/>
-              <Button type="link">修改</Button>
+              <Button type="link" onClick={()=>{this.props.history.push('/admin/prod_about/product/detail/34567890')}}>详情</Button><br/>
+              <Button type="link" onClick={()=>{this.props.history.push('/admin/prod_about/product/add_update/567890')}}>修改</Button>
             </div>
           )
         }
@@ -132,7 +134,7 @@ export default class Product extends Component{
             <Button type="primary" onClick={this.search}><Icon type="search"/>搜索</Button>
           </div>
         }
-        extra={<Button type="primary"><Icon type="plus-circle"/>添加商品</Button>}
+        extra={<Button type="primary" onClick={()=>{this.props.history.push('/admin/prod_about/product/add_update')}}><Icon type="plus-circle"/>添加商品</Button>}
       >
        <Table 
         dataSource={dataSource} 

@@ -1,10 +1,16 @@
 import React,{Component} from 'react'
 import {Card,Button,Icon,Select,Input,Table, message} from 'antd';
+import {connect} from 'react-redux'
 import {reqProductList,reqUpdateProdStatus,reqSearchProduct} from '../../api'
+import {createSaveProductAction} from '../../redux/action_creators/product_action'
 import {PAGE_SIZE} from '../../config'
 const {Option} = Select;
 
-export default class Product extends Component{
+@connect(
+  state => ({}),
+  {saveProduct:createSaveProductAction}
+)
+class Product extends Component{
 
   state = {
     productList:[],//商品列表数据(分页)
@@ -30,6 +36,8 @@ export default class Product extends Component{
         total:data.total,
         current:data.pageNum
       })
+      //把获取的商品列表存入到redux中
+      this.props.saveProduct(data.list)
     }
     else message.error('获取商品列表失败')
   }
@@ -103,14 +111,14 @@ export default class Product extends Component{
       },
       {
         title: '操作',
-        dataIndex: 'opera',
+        //dataIndex: 'opera',
         width:'10%',
         align:'center',
         key: 'opera',
-        render:()=>{
+        render:(item)=>{
           return (
             <div>
-              <Button type="link" onClick={()=>{this.props.history.push('/admin/prod_about/product/detail/34567890')}}>详情</Button><br/>
+              <Button type="link" onClick={()=>{this.props.history.push(`/admin/prod_about/product/detail/${item._id}`)}}>详情</Button><br/>
               <Button type="link" onClick={()=>{this.props.history.push('/admin/prod_about/product/add_update/567890')}}>修改</Button>
             </div>
           )
@@ -152,3 +160,4 @@ export default class Product extends Component{
     )
   }
 }
+export default Product

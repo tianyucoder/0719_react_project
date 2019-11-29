@@ -9,7 +9,6 @@ import jsonp from 'jsonp'
 import {message} from 'antd'
 //引入请求的基本路径
 import {BASE_URL,WEATHER_AK,CITY} from '../config'
-import paramCase from 'param-case'
 
 //登录请求
 export const reqLogin = (username,password)=> myAxios.post(`${BASE_URL}/login`,{username,password})
@@ -42,3 +41,11 @@ export const reqUpdateCategory = ({categoryId,categoryName})=> myAxios.post(`${B
 //请求商品分页列表
 export const reqProductList = (pageNum,pageSize)=> myAxios.get(`${BASE_URL}/manage/product/list`,{params:{pageNum,pageSize}})
 
+//请求更新商品状态
+export const reqUpdateProdStatus = (productId,status)=> myAxios.post(`${BASE_URL}/manage/product/updateStatus`,{productId,status})
+
+//搜索商品
+export const reqSearchProduct = (pageNum,pageSize,searchType,keyWord)=> myAxios.get(`${BASE_URL}/manage/product/search`,{params:{pageNum,pageSize,[searchType]:keyWord}})
+
+
+ 

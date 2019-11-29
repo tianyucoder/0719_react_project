@@ -1,21 +1,26 @@
 import React,{Component} from 'react'
-import {Card,Button,Icon,Select,Input,Table} from 'antd';
-import {reqProductList} from '../../api'
+import {Card,Button,Icon,Select,Input,Table, message} from 'antd';
+import {reqProductList,reqUpdateProdStatus,reqSearchProduct} from '../../api'
 import {PAGE_SIZE} from '../../config'
 const {Option} = Select;
 
 export default class Product extends Component{
 
   state = {
-    productList:[],
-    current:1,
-    total:''
+    productList:[],//商品列表数据(分页)
+    current:1,//当前在哪一页
+    total:'',//一共有几页
+    keyWord:'',//搜索关键词
+    searchType:'productName'//搜索类型
+  }
+
+  componentDidMount(){
+    this.getProductList()
   }
 
   getProductList = async(number=1)=>{
     let result = await reqProductList(number,PAGE_SIZE)
-    const {status,data,msg} = result
-    console.log(data);
+    const {status,data} = result
     if(status===0) {
       this.setState({
         productList:data.list,
@@ -23,10 +28,31 @@ export default class Product extends Component{
         current:data.pageNum
       })
     }
+    else message.error('初始化商品列表失败')
   }
 
-  componentDidMount(){
-    this.getProductList()
+  updateProdStatus = async({_id,status})=>{
+    let productList = [...this.state.productList]
+    if(status === 1) status = 2
+    else status = 1
+    let result = await reqUpdateProdStatus(_id,status)
+    if(result.status===0) {
+      message.success('更新商品状态成功')
+      productList = productList.map((item)=>{
+        if(item._id === _id){
+          item.status = status
+        }
+        return item
+      })
+      this.setState({productList})
+    }
+    else message.error('更新商品状态失败')
+  }
+
+  search = async()=>{
+    const {searchType,keyWord} = this.state
+    let result = await reqSearchProduct(1,PAGE_SIZE,searchType,keyWord)
+    console.log(result);
   }
 
 
@@ -55,15 +81,20 @@ export default class Product extends Component{
       },
       {
         title: '状态',
-        dataIndex: 'status',
+        //dataIndex: 'status',
         width:'10%',
         align:'center',
         key: 'status',
-        render: status =>{
+        render: (item) =>{
           return (
             <div>
-              <Button type="primary">下架</Button><br/>
-              <span>{status}</span>
+              <Button 
+                type={item.status === 1 ? 'danger':'primary'}
+                onClick={()=>{this.updateProdStatus(item)}}
+              >
+                {item.status === 1 ? '下架':'上架'}
+              </Button><br/>
+              <span>{item.status === 1 ? '在售':'已停售'}</span>
             </div>
           )
         }
@@ -88,16 +119,17 @@ export default class Product extends Component{
       <Card 
         title={
           <div>
-            <Select defaultValue="name">
-              <Option value="name">按名称搜索</Option>
-              <Option value="desc">按描述搜索</Option>
+            <Select defaultValue="productName" onChange={(value)=>{this.setState({searchType:value})}}>
+              <Option value="productName">按名称搜索</Option>
+              <Option value="productDesc">按描述搜索</Option>
             </Select>
             <Input 
               style={{margin:'0px 10px',width:'20%'}} 
               placeholder="请输入搜索关键字"
               allowClear
+              onChange={(event)=>{this.setState({keyWord:event.target.value})}}
             />
-            <Button type="primary"><Icon type="search"/>搜索</Button>
+            <Button type="primary" onClick={this.search}><Icon type="search"/>搜索</Button>
           </div>
         }
         extra={<Button type="primary"><Icon type="plus-circle"/>添加商品</Button>}

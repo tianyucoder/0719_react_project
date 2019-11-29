@@ -5,6 +5,7 @@ import screenfull from 'screenfull'
 import {connect} from 'react-redux'
 import dayjs from 'dayjs'
 import {createDeleteUserInfoAction} from '../../../redux/action_creators/login_action'
+import {createSaveTitleAction} from '../../../redux/action_creators/menu_action'
 import menuList from '../../../config/menu_config'
 import {reqWeather} from '../../../api'
 import './header.less'
@@ -15,7 +16,10 @@ const {confirm} = Modal;
     userInfo:state.userInfo,
     title:state.title
   }),
-  {deleteUser:createDeleteUserInfoAction}
+  {
+    deleteUser:createDeleteUserInfoAction,
+    saveTitle:createSaveTitleAction
+  }
 )
 @withRouter
 class Header extends Component{
@@ -61,13 +65,14 @@ class Header extends Component{
 
   //点击退出登录的回调
   logOut = ()=>{
-    let {deleteUser} = this.props
+    let {deleteUser,saveTitle} = this.props
     confirm({
       title: '确定退出？',
       content: '若退出需要重新登录',
       cancelText:'取消',
       okText:'确认',
       onOk(){
+        saveTitle('')
         deleteUser()
       },
     });

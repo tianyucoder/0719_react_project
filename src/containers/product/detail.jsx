@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import {Button,Card,Icon,List} from 'antd'
 import {connect} from 'react-redux'
+import {reqProdById} from '../../api'
 import './detail.less'
 const {Item} = List
 
@@ -18,16 +19,28 @@ class Detail extends Component {
     price:'',
   }
 
-  componentDidMount(){
-    const reduxProdList = this.props.productList
-    const {id} = this.props.match.params
-    let result = reduxProdList.find((item)=>{
-      return item._id === id
-    })
-    if(result){
-      const {categoryId,desc,detail,imgs,name,price} = result
+  getProdById = async(id)=>{
+    let result = await reqProdById(id)
+    const {status,data,msg} = result
+    if(status === 0) {
+      const {categoryId,desc,detail,imgs,name,price} = data
       this.setState({categoryId,desc,detail,imgs,name,price})
     }
+  }
+
+  componentDidMount(){
+    const {id} = this.props.match.params
+    const reduxProdList = this.props.productList
+    if(reduxProdList.length !== 0){
+      let result = reduxProdList.find((item)=>{
+        return item._id === id
+      })
+      if(result){
+        const {categoryId,desc,detail,imgs,name,price} = result
+        this.setState({categoryId,desc,detail,imgs,name,price})
+      }
+    }
+    else this.getProdById(id)
   }
 
   render() {
@@ -43,32 +56,32 @@ class Detail extends Component {
       >
         <List>
           <Item>
-            <span className="prod-name">商品名称：</span>
+            <span className="prod-title">商品名称：</span>
             <span>{this.state.name}</span>
           </Item>
           <Item>
-            <span className="prod-name">商品描述：</span>
+            <span className="prod-title">商品描述：</span>
             <span>{this.state.desc}</span>
           </Item>
           <Item>
-            <span className="prod-name">商品价格：</span>
+            <span className="prod-title">商品价格：</span>
             <span>{this.state.price}</span>
           </Item>
           <Item>
-            <span className="prod-name">所属分类：</span>
+            <span className="prod-title">所属分类：</span>
             <span>{this.state.categoryId}</span>
           </Item>
           <Item>
-            <span className="prod-name">商品图片：</span>
+            <span className="prod-title">商品图片：</span>
             {
-              this.state.imgs.map((item)=>{
-                return <img src={`/upload/`+item} alt="商品图片"/>
+              this.state.imgs.map((item,index)=>{
+                return <img key={index} src={`/upload/`+item} alt="商品图片"/>
               })
             }
           </Item>
           <Item>
-            <span className="prod-name">商品详情：</span>
-          <span>{this.state.detail}</span>
+            <span className="prod-title">商品详情：</span>
+            <span dangerouslySetInnerHTML={{__html:this.state.detail}}></span>
           </Item>
         </List>
       </Card>

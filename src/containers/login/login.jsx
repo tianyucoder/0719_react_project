@@ -60,7 +60,7 @@ class Login extends Component{
     //从redux中获取用户的登录状态
     const {isLogin} = this.props;
     //如果已经登录了，重定向到admin页面
-    if(isLogin)return <Redirect to="/admin"/>
+    if(isLogin)return <Redirect to="/admin/home"/>
     return (
       <div className="login">
         <header>

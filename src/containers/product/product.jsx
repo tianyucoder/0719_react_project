@@ -1,29 +1,42 @@
 import React,{Component} from 'react'
 import {Card,Button,Icon,Select,Input,Table} from 'antd';
+import {reqProductList} from '../../api'
+import {PAGE_SIZE} from '../../config'
 const {Option} = Select;
 
 export default class Product extends Component{
+
+  state = {
+    productList:[],
+    current:1,
+    total:''
+  }
+
+  getProductList = async(number=1)=>{
+    let result = await reqProductList(number,PAGE_SIZE)
+    const {status,data,msg} = result
+    console.log(data);
+    if(status===0) {
+      this.setState({
+        productList:data.list,
+        total:data.total,
+        current:data.pageNum
+      })
+    }
+  }
+
+  componentDidMount(){
+    this.getProductList()
+  }
+
+
   render(){
-    const dataSource = [
-      {
-        key: '1',
-        name: '华为xxx手机',
-        desc: '国产手机的骄傲---华为',
-        price:'4999',
-        status:'在售'
-      },
-      {
-        key: '2',
-        name: 'Applexxx手机',
-        desc: '顶尖科技的手机',
-        price:'8999',
-        status:'在售'
-      },
-    ];
+    const dataSource = this.state.productList
     
     const columns = [
       {
         title: '商品名称',
+        width:'18%',
         dataIndex: 'name',
         key: 'name',
       },
@@ -37,11 +50,13 @@ export default class Product extends Component{
         dataIndex: 'price',
         key: 'price',
         align:'center',
+        width:'9%',
         render: price =>'￥'+price
       },
       {
         title: '状态',
         dataIndex: 'status',
+        width:'10%',
         align:'center',
         key: 'status',
         render: status =>{
@@ -56,6 +71,7 @@ export default class Product extends Component{
       {
         title: '操作',
         dataIndex: 'opera',
+        width:'10%',
         align:'center',
         key: 'opera',
         render:()=>{
@@ -90,6 +106,13 @@ export default class Product extends Component{
         dataSource={dataSource} 
         columns={columns}
         bordered
+        rowKey='_id'
+        pagination={{
+          total:this.state.total,
+          pageSize:PAGE_SIZE,
+          current:this.state.current,
+          onChange:this.getProductList
+        }}
        />
       </Card>
     )

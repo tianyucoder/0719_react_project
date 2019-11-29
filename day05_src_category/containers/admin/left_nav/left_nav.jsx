@@ -18,7 +18,7 @@ const {SubMenu,Item} = Menu;
 class LeftNav extends Component {
 
   componentDidMount(){
-    //console.log(this.props.location.pathname.split('/').splice(2));
+    console.log(this.props.location.pathname.split('/').splice(2));
   }
 
 
@@ -61,7 +61,7 @@ class LeftNav extends Component {
           <h1>商品管理系统</h1>
         </header>
         <Menu
-          selectedKeys={pathname.split('/').reverse()[0]}
+          defaultSelectedKeys={pathname.split('/').reverse()[0]}
           defaultOpenKeys={pathname.split('/').splice(2)}
           mode="inline"
           theme="dark"

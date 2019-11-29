@@ -74,6 +74,7 @@ class Header extends Component{
   }
 
   getTitle = ()=>{
+    console.log('---getTitle---');
     let pathKey = this.props.location.pathname.split('/').reverse()[0]
     let title = ''
     menuList.forEach((item)=>{

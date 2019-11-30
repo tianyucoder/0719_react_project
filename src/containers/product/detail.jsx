@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import {Button,Card,Icon,List, message} from 'antd'
 import {connect} from 'react-redux'
-import {reqProdById} from '../../api'
+import {reqProdById,reqCategoryList} from '../../api'
 import {BASE_URL} from '../../config'
 import './detail.less'
 const {Item} = List
@@ -22,12 +22,28 @@ class Detail extends Component {
     imgs:[],
     name:'',
     price:'',
+    isLoading:true
   }
 
   getProdById = async(id)=>{
     let result = await reqProdById(id)
     const {status,data,msg} = result
-    if(status === 0) this.setState({...data})
+    if(status === 0) {
+      this.categoryId = data.categoryId
+      this.setState({...data})
+    }
+    else message.error(msg)
+  }
+
+  getCategorylist = async()=>{
+    let result = await reqCategoryList()
+    const {status,data,msg} = result
+    if(status===0) {
+      let result = data.find((item)=>{
+        return item._id === this.categoryId
+      })
+      if(result) this.setState({categoryName:result.name,isLoading:false})
+    } 
     else message.error(msg)
   }
 
@@ -44,25 +60,25 @@ class Detail extends Component {
     }
     else this.getProdById(id)
     if(reduxCateList.length){
-      let result = reduxCateList.find((item)=>{
-        return item._id === this.categoryId
-      })
-      this.setState({categoryName:result.name})
+      let result = reduxCateList.find((item)=>item._id === this.categoryId)
+      this.setState({categoryName:result.name,isLoading:false})
     }
+    else this.getCategorylist()
   }
 
   render() {
     return (
-      <Card title={
-        <div className='left-top'>
-          <Button type="link" size="small" onClick={()=>{this.props.history.goBack()}}>
-            <Icon type="arrow-left" style={{fontSize:'20px'}}/>
-          </Button>
-          <span>商品详情</span>
-        </div>
+      <Card 
+        title={
+          <div className='left-top'>
+            <Button type="link" size="small" onClick={()=>{this.props.history.goBack()}}>
+              <Icon type="arrow-left" style={{fontSize:'20px'}}/>
+            </Button>
+            <span>商品详情</span>
+          </div>
         }
       >
-        <List>
+        <List loading={this.state.isLoading}>
           <Item>
             <span className="prod-title">商品名称：</span>
             <span>{this.state.name}</span>

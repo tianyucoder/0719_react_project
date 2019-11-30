@@ -17,7 +17,8 @@ class Product extends Component{
     current:1,//当前在哪一页
     total:'',//一共有几页
     keyWord:'',//搜索关键词
-    searchType:'productName'//搜索类型
+    searchType:'productName',//搜索类型
+    isLoading:true
   }
 
   componentDidMount(){
@@ -34,7 +35,8 @@ class Product extends Component{
       this.setState({
         productList:data.list,
         total:data.total,
-        current:data.pageNum
+        current:data.pageNum,
+        isLoading:false
       })
       //把获取的商品列表存入到redux中
       this.props.saveProduct(data.list)
@@ -149,6 +151,7 @@ class Product extends Component{
         columns={columns}
         bordered
         rowKey='_id'
+        loading={this.state.isLoading}
         pagination={{
           total:this.state.total,
           pageSize:PAGE_SIZE,

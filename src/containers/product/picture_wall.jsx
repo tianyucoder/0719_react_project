@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
-import {Upload,Icon,Modal} from 'antd';
+import {Upload,Icon,Modal, message} from 'antd';
 import {BASE_URL} from '../../config'
+import {reqDeletePicture} from '../../api'
 
 //将图片变成base64编码形式
 function getBase64(file) {
@@ -16,15 +17,17 @@ export default class PicturesWall extends Component {
   state = {
     previewVisible: false, //是否展示预览窗
     previewImage: '',//要预览的图片的URL地址或base64编码
-    fileList: [
-      {
-        uid: '-1',
-        name: 'image.png',
-        status: 'done', 
-        url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-      }
-    ],
+    fileList: [],//收集好的所有上传完毕的图片名
   };
+
+  //从fileList提取出所有该商品对应的图片名字，构建一个数组，供新增商品使用。
+  getImgArr = ()=>{
+    let result = []
+    this.state.fileList.forEach((item)=>{
+      result.push(item.name)
+    })
+    return result
+  }
 
   //关闭预览窗
   handleCancel = () => this.setState({ previewVisible: false });
@@ -42,14 +45,19 @@ export default class PicturesWall extends Component {
   };
 
   //当图片状态发生改变的回调
-  handleChange = ({file,fileList}) => {
-
+  handleChange = async ({file,fileList}) => {
+    //若文件上传成功
     if(file.status === 'done'){
       console.log(file.response.data.url);
       fileList[fileList.length-1].url = file.response.data.url
       fileList[fileList.length-1].name = file.response.data.name
     }
-
+    if(file.status === 'removed'){
+      let result = await reqDeletePicture(file.name)
+      const {status,msg} = result
+      if(status===0) message.success('删除图片成功')
+      else message.error(msg)
+    }
     this.setState({ fileList })
   };
 

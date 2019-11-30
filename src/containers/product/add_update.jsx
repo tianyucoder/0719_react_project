@@ -1,27 +1,59 @@
 import React, { Component } from 'react'
-import {Card,Button,Icon,Form,Input,Select} from 'antd'
+import {Card,Button,Icon,Form,Input,Select,message} from 'antd'
+import {connect} from 'react-redux'
+import {reqCategoryList} from '../../api'
+import PicturesWall from './picture_wall'
 const {Item} = Form
 const {Option} = Select
 
+@connect(
+  state => ({categoryList:state.categoryList}),
+  {}
+)
 @Form.create()
 class AddUpdate extends Component {
 
+  state = {
+    categoryList:[]
+  }
+
+  getCategoryList = async()=>{
+    console.log('redux中没有数据了，只能请求后台');
+    let result = await reqCategoryList()
+    const {status,data,msg} = result
+    if(status === 0) this.setState({categoryList:data})
+    else message.error(msg)
+  }
+
+  componentDidMount(){
+    const {categoryList} = this.props
+    if(categoryList.length)this.setState({categoryList})
+    else this.getCategoryList()
+    
+  }
+
+  handleSubmit = (event)=>{
+    event.preventDefault()
+    this.props.form.validateFields(async(err, values) => {
+      if(err) return
+      console.log('发请求了',values);
+    });
+  }
+
   render() {
-    //getFieldDecorator包装Form组件
     const {getFieldDecorator} = this.props.form;
-    //左上角返回区域
-    const title = (
-      <div>
-        <Button type="link" onClick={this.props.history.goBack}>
-          <Icon type="arrow-left"/>
-          <span>返回</span>
-        </Button>
-        <span>商品添加</span>
-      </div>
-    )
     
     return (
-        <Card title={title}>
+        <Card 
+          title={
+            <div>
+              <Button type="link" onClick={this.props.history.goBack}>
+                <Icon type="arrow-left"/>
+                <span>返回</span>
+              </Button>
+              <span>商品添加</span>
+            </div>}
+        >
           <Form 
             onSubmit={this.handleSubmit}
             labelCol={{md:2}}
@@ -75,13 +107,19 @@ class AddUpdate extends Component {
               })(
                 <Select>
                   <Option value="">请选择分类</Option>
-                  <Option value="1">分类一</Option>
-                  <Option value="2">分类二</Option>
+                  {
+                    this.state.categoryList.map((item)=>{
+                    return <Option key={item._id} value={item._id}>{item.name}</Option>
+                    })
+                  }
                 </Select>
               )}
             </Item>
-            <Item label="商品图片">
-              此处为照片墙
+            <Item 
+              label="商品图片"
+              wrapperCol={{md:12}}
+            >
+              <PicturesWall/>
             </Item>
             <Item label="商品详情">
               此处为富文本编辑器

@@ -42,7 +42,7 @@ export const reqUpdateCategory = ({categoryId,categoryName})=> myAxios.post(`${B
 export const reqProductList = (pageNum,pageSize)=> myAxios.get(`${BASE_URL}/manage/product/list`,{params:{pageNum,pageSize}})
 
 //请求更新商品状态
-export const reqUpdateProdStatus = (productId,status)=> myAxios.post(`${BASE_URL}/manage/product/updateStatus`,{productId,status})
+export const reqUpdateProdStatus = (productID,status)=> myAxios.post(`${BASE_URL}/manage/product/updateStatus`,{productID,status})
 
 //搜索商品
 export const reqSearchProduct = (pageNum,pageSize,searchType,keyWord)=> myAxios.get(`${BASE_URL}/manage/product/search`,{params:{pageNum,pageSize,[searchType]:keyWord}})

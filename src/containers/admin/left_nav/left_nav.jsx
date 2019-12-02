@@ -29,15 +29,16 @@ class LeftNav extends Component {
     const {menus,username} = this.props
     console.log(this.props.menus); //[ 'home','category','user','line']
     console.log(item);//{title: "首页", key: "home", icon: "home", path: "/admin/home"}
+    //如果是超级管理员，可以查看所有菜单
     if(username === 'admin') return true
+    //如果没有子菜单，看当前菜单的key是否在menus中
     else if(!item.children){
-      return menus.find((item2)=>{return item2 === item.key})
-    }else if (item.children){
-      return item.children.some((item3)=>{return menus.indexOf(item3.key) !== -1})
+      return menus.find((item2)=> item2 === item.key)
     }
-
-    //校验菜单权限
-    //eturn true
+    //如果有子菜单，看子菜单里的每一个菜单是否包含在menus中
+    else if (item.children){
+      return item.children.some((item3)=> menus.indexOf(item3.key) !== -1)
+    }
   }
 
 

@@ -11,6 +11,8 @@
     "dayjs": "^1.8.17",
     "draft-js": "^0.11.2",
     "draftjs-to-html": "^0.8.4",
+    "echarts": "^4.5.0",
+    "echarts-for-react": "^2.0.15-beta.1",
     "html-to-draftjs": "^1.4.0",
     "jsonp": "^0.2.1",
     "less": "^3.10.3",

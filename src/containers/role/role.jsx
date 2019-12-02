@@ -1,8 +1,11 @@
 import React,{Component} from 'react'
-import {Card,Button,Icon,Table, message,Modal,Form,Input} from 'antd';
+import {Card,Button,Icon,Table, message,Modal,Form,Input,Tree } from 'antd';
 import dayjs from 'dayjs'
-import {reqRoleList,reqAddRole} from '../../api'
+import {reqRoleList,reqAddRole,reqAuthRole} from '../../api'
+import menuList from '../../config/menu_config'
 const {Item} = Form
+const {TreeNode} = Tree;
+
 
 @Form.create()
 class Role extends Component{
@@ -10,12 +13,14 @@ class Role extends Component{
   state = {
     isShowAdd:false,
     isShowAuth:false,
-    roleList:[]
+    roleList:[],
+    menuList,
+    checkedKeys: ['product','line'],//选中的菜单
   }
 
   getRoleList = async()=>{
     let result = await reqRoleList()
-    const {status,data,msg} = result
+    const {status,data} = result
     if(status===0) this.setState({roleList:data})
   }
 
@@ -28,7 +33,7 @@ class Role extends Component{
     this.props.form.validateFields(async(err, values) => {
       if(err) return
       let result = await reqAddRole(values)
-      const {status,data,msg} = result
+      const {status,msg} = result
       if(status===0) {
         message.success('新增角色成功')
         this.getRoleList()
@@ -45,14 +50,31 @@ class Role extends Component{
 
   //授权弹窗--确认按钮
   handleAuthOk = ()=>{
-    alert('提交了')
+    reqAuthRole({_id:'',})
   }
 
   //授权弹窗--取消按钮
   handleAuthCancel = ()=>{
     this.setState({isShowAuth:false})
   }
-  
+
+  onCheck = checkedKeys => {
+    console.log('onCheck', checkedKeys);
+    this.setState({ checkedKeys });
+  };
+
+  renderTreeNodes = (data) =>
+      data.map(item => {
+      if (item.children) {
+        return (
+          <TreeNode title={item.title} key={item.key} dataRef={item}>
+            {this.renderTreeNodes(item.children)}
+          </TreeNode>
+        );
+      }
+      return <TreeNode key={item.key} {...item} />;
+  });
+
   render(){
     const dataSource = this.state.roleList
     const columns = [
@@ -84,6 +106,8 @@ class Role extends Component{
         render: () => <Button type='link' onClick={()=>{this.setState({isShowAuth:true})}}>设置权限</Button>
       }
     ];
+    //treeData是属性菜单的源数据
+    const treeData = this.state.menuList
     const {getFieldDecorator} = this.props.form
     return (
       <div>
@@ -133,7 +157,16 @@ class Role extends Component{
           okText="确认"
           cancelText="取消"
         >
-          此处为权限列表<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+          <Tree
+            checkable //允许选中
+            onCheck={this.onCheck}
+            checkedKeys={this.state.checkedKeys}
+            defaultExpandAll={true}
+          >
+            <TreeNode title='平台功能' key='top'>
+              {this.renderTreeNodes(treeData)}
+            </TreeNode>
+          </Tree>
         </Modal>
       </div>
     )

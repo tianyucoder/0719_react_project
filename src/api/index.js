@@ -65,3 +65,6 @@ export const reqRoleList = ()=> myAxios.get(`${BASE_URL}/manage/role/list`)
 //请求添加角色
 export const reqAddRole = ({roleName})=> myAxios.post(`${BASE_URL}/manage/role/add`,{roleName})
 
+//请求给角色授权export const reqAddRole = ({roleName})=> myAxios.post(`${BASE_URL}/manage/role/add`,{roleName})
+export const reqAuthRole = (roleObj)=> myAxios.post(`${BASE_URL}/manage/role/update`,{...roleObj,auth_time:Date.now()})
+

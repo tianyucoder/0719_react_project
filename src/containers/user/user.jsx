@@ -17,7 +17,7 @@ class User extends Component{
 
   getUserList = async()=>{
     let result = await reqUserList()
-    const {status,data,msg} = result
+    const {status,data} = result
     if(status === 0) this.setState({
       userList:data.users.reverse(),
       roleList:data.roles

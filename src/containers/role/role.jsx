@@ -58,7 +58,7 @@ class Role extends Component{
     const {_id,checkedKeys} = this.state
     const {username} = this.props
     let result = await reqAuthRole({_id,menus:checkedKeys,auth_name:username})
-    const {status,data,msg} = result
+    const {status,msg} = result
     if(status===0) {
       message.success('授权成功',1)
       this.setState({isShowAuth:false})

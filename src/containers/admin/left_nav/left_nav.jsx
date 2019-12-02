@@ -9,7 +9,10 @@ import './left_nav.less'
 const {SubMenu,Item} = Menu;
 
 @connect(
-  state => ({}),
+  state => ({
+    menus:state.userInfo.user.role.menus,
+    username:state.userInfo.user.username,
+  }),
   {
     saveTitle:createSaveTitleAction
   }
@@ -21,33 +24,51 @@ class LeftNav extends Component {
     //console.log(this.props.location.pathname.split('/').splice(2));
   }
 
+  hasAuth = (item)=>{
+    //获取当前用户可以看到的菜单的数组
+    const {menus,username} = this.props
+    console.log(this.props.menus); //[ 'home','category','user','line']
+    console.log(item);//{title: "首页", key: "home", icon: "home", path: "/admin/home"}
+    if(username === 'admin') return true
+    else if(!item.children){
+      return menus.find((item2)=>{return item2 === item.key})
+    }else if (item.children){
+      return item.children.some((item3)=>{return menus.indexOf(item3.key) !== -1})
+    }
+
+    //校验菜单权限
+    //eturn true
+  }
+
 
   //用于创建菜单的函数
   createMenu = (target)=>{
     return target.map((item)=>{
-      if(!item.children){
-        return (
-          <Item key={item.key} onClick={()=>{this.props.saveTitle(item.title)}}>
-            <Link to={item.path}>
-              <Icon type={item.icon} />
-              <span>{item.title}</span>
-            </Link>
-          </Item>
-        )
-      }else{
-        return (
-          <SubMenu
-            key={item.key}
-            title={
-              <span>
-                <Icon type={item.icon}/>
+      if(this.hasAuth(item)){
+        if(!item.children){
+          return (
+            <Item key={item.key} onClick={()=>{this.props.saveTitle(item.title)}}>
+              <Link to={item.path}>
+                <Icon type={item.icon} />
                 <span>{item.title}</span>
-              </span>
-            }
-          >
-            {this.createMenu(item.children)}
-          </SubMenu>
-        )
+              </Link>
+            </Item>
+          )
+        }else{
+          return (
+            <SubMenu
+              key={item.key}
+              title={
+                <span>
+                  <Icon type={item.icon}/>
+                  <span>{item.title}</span>
+                </span>
+              }
+            >
+              {this.createMenu(item.children)}
+            </SubMenu>
+          )
+        }
       }
     })
   }

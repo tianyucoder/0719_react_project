@@ -3,10 +3,14 @@ import {Card,Button,Icon,Table, message,Modal,Form,Input,Tree } from 'antd';
 import dayjs from 'dayjs'
 import {reqRoleList,reqAddRole,reqAuthRole} from '../../api'
 import menuList from '../../config/menu_config'
+import {connect} from 'react-redux'
 const {Item} = Form
 const {TreeNode} = Tree;
 
-
+@connect(
+  state => ({username:state.userInfo.user.username}),
+  {}
+)
 @Form.create()
 class Role extends Component{
 
@@ -15,7 +19,8 @@ class Role extends Component{
     isShowAuth:false,
     roleList:[],
     menuList,
-    checkedKeys: ['product','line'],//选中的菜单
+    checkedKeys: [],//选中的菜单
+    _id:''//当前操作的角色id
   }
 
   getRoleList = async()=>{
@@ -49,8 +54,17 @@ class Role extends Component{
   }
 
   //授权弹窗--确认按钮
-  handleAuthOk = ()=>{
-    reqAuthRole({_id:'',})
+  handleAuthOk = async()=>{
+    const {_id,checkedKeys} = this.state
+    const {username} = this.props
+    let result = await reqAuthRole({_id,menus:checkedKeys,auth_name:username})
+    const {status,data,msg} = result
+    if(status===0) {
+      message.success('授权成功',1)
+      this.setState({isShowAuth:false})
+      this.getRoleList()
+    }
+    else message.error(msg,1)
   }
 
   //授权弹窗--取消按钮
@@ -58,10 +72,23 @@ class Role extends Component{
     this.setState({isShowAuth:false})
   }
 
-  onCheck = checkedKeys => {
-    console.log('onCheck', checkedKeys);
-    this.setState({ checkedKeys });
-  };
+  onCheck = checkedKeys => this.setState({ checkedKeys });
+
+  //用于展示授权弹窗
+  showAuth = (id)=>{
+    const {roleList} = this.state
+    let result = roleList.find((item)=>{
+      return item._id === id
+    })
+    if(result) this.setState({checkedKeys:result.menus})
+    this.setState({isShowAuth:true,_id:id})
+  }
+
+  //用于展示新增弹窗
+  showAdd = ()=>{
+    this.props.form.resetFields()
+    this.setState({isShowAdd:true});
+  }
 
   renderTreeNodes = (data) =>
       data.map(item => {
@@ -103,7 +130,7 @@ class Role extends Component{
       {
         title: '操作',
         key: 'option',
-        render: () => <Button type='link' onClick={()=>{this.setState({isShowAuth:true})}}>设置权限</Button>
+        render: (item) => <Button type='link' onClick={()=>{this.showAuth(item._id)}}>设置权限</Button>
       }
     ];
     //treeData是属性菜单的源数据
@@ -112,7 +139,7 @@ class Role extends Component{
     return (
       <div>
         <Card
-          title={<Button type='primary' onClick={()=>{this.setState({isShowAdd:true})}}>
+          title={<Button type='primary' onClick={()=>{this.showAdd()}}>
                   <Icon type="plus"/>
                   新增角色
                  </Button>}

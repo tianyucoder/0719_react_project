@@ -68,3 +68,8 @@ export const reqAddRole = ({roleName})=> myAxios.post(`${BASE_URL}/manage/role/a
 //请求给角色授权export const reqAddRole = ({roleName})=> myAxios.post(`${BASE_URL}/manage/role/add`,{roleName})
 export const reqAuthRole = (roleObj)=> myAxios.post(`${BASE_URL}/manage/role/update`,{...roleObj,auth_time:Date.now()})
 
+//请求获取所有用户列表（同时携带着角色列表）
+export const reqUserList = ()=> myAxios.get(`${BASE_URL}/manage/user/list`)
+
+//请求添加用户
+export const reqAddUser = (userObj)=> myAxios.post(`${BASE_URL}/manage/user/add`,{...userObj})

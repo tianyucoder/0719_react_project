@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Card, Button} from 'antd'
+import {Card} from 'antd'
 import ReactEcharts from 'echarts-for-react'
 
 /*
@@ -36,22 +36,9 @@ export default class Bar extends Component {
   };
   }
 
-  update = () => {
-    const sales = this.state.sales.map(sale => sale + 1)
-    const inventorys = this.state.inventorys.map(inventory => inventory -1)
-    
-    this.setState({
-      sales,
-      inventorys
-    })
-  }
   render() {
     return (
       <div>
-        <Card>
-          <Button type='primary' onClick={this.update}>更新</Button>
-        </Card>
-
         <Card title='柱状图一'>
           <ReactEcharts option={this.getOption()} style={{height: 300}}/>
         </Card>

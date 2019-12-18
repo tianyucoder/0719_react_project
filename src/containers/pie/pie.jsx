@@ -10,8 +10,7 @@ export default class Pie extends Component {
   getOption = () => {
     return {
         title : {
-            text: '某站点用户访问来源',
-            subtext: '纯属虚构',
+            text: '用户访问来源',
             x:'center'
         },
         tooltip : {
@@ -130,10 +129,6 @@ export default class Pie extends Component {
         <Card title='饼图一'>
           <ReactEcharts option={this.getOption()} style={{height: 300}}/>
         </Card>
-        <Card title='饼图一'>
-          <ReactEcharts option={this.getOption2()} style={{height: 300}}/>
-        </Card>
-
       </div>
     )
   }

@@ -136,11 +136,11 @@ class User extends Component{
                 rules: [{required: true, message: '用户名必须输入' },],
               })(<Input placeholder="请输入用户名"/>)}
             </Item>
-            <Item label="密码">
+            <Item label="密码" >
               {getFieldDecorator('password', {
                 initialValue:'',
                 rules: [{required: true, message: '密码必须输入' },],
-              })(<Input placeholder="请输入密码"/>)}
+              })(<Input placeholder="请输入密码" type="password"/>)}
             </Item>
             <Item label="手机号">
               {getFieldDecorator('phone', {

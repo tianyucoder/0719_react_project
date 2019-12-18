@@ -27,8 +27,8 @@ class LeftNav extends Component {
   hasAuth = (item)=>{
     //获取当前用户可以看到的菜单的数组
     const {menus,username} = this.props
-    console.log(this.props.menus); //[ 'home','category','user','line']
-    console.log(item);//{title: "首页", key: "home", icon: "home", path: "/admin/home"}
+    //console.log(this.props.menus); //[ 'home','category','user','line']
+    //console.log(item);//{title: "首页", key: "home", icon: "home", path: "/admin/home"}
     //如果是超级管理员，可以查看所有菜单
     if(username === 'admin') return true
     //如果没有子菜单，看当前菜单的key是否在menus中
@@ -70,7 +70,8 @@ class LeftNav extends Component {
             </SubMenu>
           )
         }
-      }
+			}
+			return null
     })
   }
 
